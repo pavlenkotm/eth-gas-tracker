@@ -1,50 +1,307 @@
+"""ETH Gas Tracker - Main CLI application."""
+
 import argparse
 import asyncio
 import aiohttp
-import math
+import json
+import sys
+from datetime import datetime
 
-DEFAULT_RPC = "https://eth.llamarpc.com"  # любой общий ETH RPC
-COINGECKO = "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
+from .networks import NETWORKS, TX_TYPES
+from .tracker import GasTracker
+from .history import GasHistory
+from .stats import GasStats
+from .graphs import ASCIIGraph
+from .alerts import GasAlerts
+from .api import GasAPI
 
-async def eth_call(session, url, payload):
-    async with session.post(url, json=payload, timeout=15) as r:
-        r.raise_for_status()
-        return await r.json()
 
-async def get_base_fee_gwei(session, rpc_url):
-    # eth_feeHistory на 1 блок возвращает baseFeePerGas следующего блока
-    payload = {"jsonrpc":"2.0","id":1,"method":"eth_feeHistory","params":[1,"latest",[]]}
-    data = await eth_call(session, rpc_url, payload)
-    base_wei = int(data["result"]["baseFeePerGas"][-1], 16)
-    return base_wei / 1e9  # gwei
+async def track_once(
+    tracker: GasTracker,
+    session: aiohttp.ClientSession,
+    args,
+    history: GasHistory = None,
+) -> dict:
+    """Perform a single gas price check."""
+    gas_data = await tracker.get_gas_data(session, args.priority)
 
-async def get_eth_usd(session):
-    try:
-        data = await (await session.get(COINGECKO, timeout=10)).json()
-        return float(data["ethereum"]["usd"])
-    except Exception:
-        return None
+    # Save to history if enabled
+    if args.history and history:
+        history.add_record(gas_data)
 
-async def main():
-    p = argparse.ArgumentParser(description="ETH Gas Tracker (no API keys).")
-    p.add_argument("--rpc", default=DEFAULT_RPC, help="Ethereum RPC URL")
-    p.add_argument("--priority", type=float, default=1.5, help="priority tip in gwei (default 1.5)")
-    p.add_argument("--show-usd", action="store_true", help="estimate tx cost in USD (simple transfer, 21k gas)")
-    args = p.parse_args()
+    # JSON output mode
+    if args.json:
+        output = {"timestamp": datetime.now().isoformat(), **gas_data}
 
-    async with aiohttp.ClientSession() as session:
-        base = await get_base_fee_gwei(session, args.rpc)
-        max_fee = base + args.priority
-        line = f"Base: {base:.1f} gwei | Priority: {args.priority:.1f} | Max: {max_fee:.1f}"
+        # Add tx costs if requested
+        if args.show_costs:
+            tx_costs = {}
+            for tx_type, tx_info in TX_TYPES.items():
+                cost = tracker.calculate_tx_cost(
+                    gas_data["max_fee"], tx_info["gas"], gas_data["token_price_usd"]
+                )
+                tx_costs[tx_type] = {
+                    "name": tx_info["name"],
+                    "gas_units": tx_info["gas"],
+                    "cost_native": cost["cost_native"],
+                    "cost_usd": cost["cost_usd"],
+                }
+            output["tx_costs"] = tx_costs
 
-        if args.show_usd:
-            price = await get_eth_usd(session)
-            if price:
-                # оценка для простой L1-транзакции 21_000 газа
-                usd = (max_fee * 1e-9) * 21000 * price
-                line += f" | Tx ≈ ${usd:.2f}"
+        print(json.dumps(output, indent=2))
+        return gas_data
+
+    # Human-readable output
+    if args.detailed:
+        # Show detailed view with stats and graphs
+        stats = None
+        recommendation = "No historical data"
+
+        if history:
+            records = history.get_records(network=gas_data["network"], limit=100)
+            if records:
+                recent_records = GasStats.filter_by_timeframe(records, args.stats_hours)
+                stats = GasStats.calculate_stats(recent_records)
+                recommendation = GasStats.recommend_action(
+                    gas_data["base_fee"], stats
+                )
+
+                # Show graph
+                if args.graph:
+                    print(ASCIIGraph.create_bar_chart(records, max_bars=15))
+
+        # Show summary
+        print(ASCIIGraph.create_summary_display(gas_data, stats, recommendation))
+
+        # Show tx costs
+        if args.show_costs:
+            print("💸 Transaction Cost Estimates:")
+            print("-" * 60)
+            for tx_type, tx_info in TX_TYPES.items():
+                cost = tracker.calculate_tx_cost(
+                    gas_data["max_fee"], tx_info["gas"], gas_data["token_price_usd"]
+                )
+                usd_str = (
+                    f"${cost['cost_usd']:.2f}" if cost["cost_usd"] else "N/A"
+                )
+                print(
+                    f"  {tx_info['name']:20} ({tx_info['gas']:>6} gas): {usd_str:>10}"
+                )
+            print("-" * 60 + "\n")
+
+    else:
+        # Simple one-line output
+        line = f"[{gas_data['network']}] Base: {gas_data['base_fee']:.1f} gwei | "
+        line += f"Priority: {gas_data['priority_tip']:.1f} | "
+        line += f"Max: {gas_data['max_fee']:.1f}"
+
+        if args.show_usd and gas_data["token_price_usd"]:
+            # Show simple transfer cost
+            cost = tracker.calculate_tx_cost(
+                gas_data["max_fee"], 21000, gas_data["token_price_usd"]
+            )
+            line += f" | Tx ≈ ${cost['cost_usd']:.2f}"
 
         print(line)
 
+    return gas_data
+
+
+async def watch_mode(
+    tracker: GasTracker, args, history: GasHistory = None, alerts: GasAlerts = None
+):
+    """Continuous monitoring mode."""
+    print(f"👀 Watching {tracker.network_name} gas prices (Ctrl+C to stop)")
+    print(f"⏱️  Update interval: {args.watch} seconds\n")
+
+    if alerts and alerts.threshold:
+        print(f"🔔 Alert threshold: {alerts.threshold} gwei\n")
+
+    iteration = 0
+
+    try:
+        async with aiohttp.ClientSession() as session:
+            while True:
+                try:
+                    # Clear screen for detailed mode
+                    if args.detailed and iteration > 0:
+                        print("\033[2J\033[H", end="")  # Clear screen and move cursor
+
+                    gas_data = await track_once(tracker, session, args, history)
+
+                    # Check alerts
+                    if alerts:
+                        alert_msg = alerts.check_alert(gas_data["base_fee"])
+                        if alert_msg:
+                            alerts.notify(alert_msg, beep=args.beep)
+
+                    iteration += 1
+                    await asyncio.sleep(args.watch)
+
+                except KeyboardInterrupt:
+                    raise
+                except Exception as e:
+                    print(f"❌ Error: {e}", file=sys.stderr)
+                    await asyncio.sleep(args.watch)
+
+    except KeyboardInterrupt:
+        print("\n\n👋 Stopped watching")
+
+
+async def main():
+    """Main entry point."""
+    parser = argparse.ArgumentParser(
+        description="ETH Gas Tracker - Multi-network gas price monitoring",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Basic usage
+  python -m ethgas.main
+
+  # Watch Ethereum gas prices with alerts
+  python -m ethgas.main --watch 10 --alert 30
+
+  # Detailed view with graph and costs
+  python -m ethgas.main --detailed --graph --show-costs
+
+  # Monitor Polygon network
+  python -m ethgas.main --network polygon --watch 15
+
+  # JSON output for scripting
+  python -m ethgas.main --json --show-costs
+
+  # Start API server
+  python -m ethgas.main --api --port 8080
+        """,
+    )
+
+    # Network options
+    parser.add_argument(
+        "--network",
+        default="ethereum",
+        choices=list(NETWORKS.keys()),
+        help="Network to monitor (default: ethereum)",
+    )
+    parser.add_argument(
+        "--rpc", help="Custom RPC URL (overrides network default)"
+    )
+
+    # Gas parameters
+    parser.add_argument(
+        "--priority",
+        type=float,
+        default=1.5,
+        help="Priority tip in gwei (default: 1.5)",
+    )
+
+    # Display options
+    parser.add_argument(
+        "--show-usd",
+        action="store_true",
+        help="Show simple transfer cost in USD",
+    )
+    parser.add_argument(
+        "--show-costs",
+        action="store_true",
+        help="Show costs for different transaction types",
+    )
+    parser.add_argument(
+        "--detailed",
+        action="store_true",
+        help="Show detailed view with stats and recommendations",
+    )
+    parser.add_argument(
+        "--graph",
+        action="store_true",
+        help="Show ASCII graph (requires --detailed)",
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # Watch mode
+    parser.add_argument(
+        "--watch",
+        type=int,
+        metavar="SECONDS",
+        help="Watch mode: update every N seconds",
+    )
+
+    # Alerts
+    parser.add_argument(
+        "--alert",
+        type=float,
+        metavar="GWEI",
+        help="Alert when base fee drops below threshold (gwei)",
+    )
+    parser.add_argument(
+        "--beep",
+        action="store_true",
+        help="Make beep sound on alert",
+    )
+
+    # History and stats
+    parser.add_argument(
+        "--history",
+        action="store_true",
+        help="Save gas prices to history",
+    )
+    parser.add_argument(
+        "--stats-hours",
+        type=int,
+        default=24,
+        help="Hours of history for statistics (default: 24)",
+    )
+
+    # API mode
+    parser.add_argument(
+        "--api",
+        action="store_true",
+        help="Start REST API server",
+    )
+    parser.add_argument(
+        "--host",
+        default="0.0.0.0",
+        help="API server host (default: 0.0.0.0)",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=8080,
+        help="API server port (default: 8080)",
+    )
+
+    args = parser.parse_args()
+
+    # API mode
+    if args.api:
+        api = GasAPI(host=args.host, port=args.port)
+        api.run()
+        return
+
+    # Get network config
+    network = NETWORKS[args.network]
+    rpc_url = args.rpc or network["rpc"]
+
+    # Initialize components
+    tracker = GasTracker(rpc_url, network["coingecko_id"], network["name"])
+    history = GasHistory() if (args.history or args.detailed) else None
+    alerts = GasAlerts(threshold=args.alert) if args.alert else None
+
+    # Watch mode
+    if args.watch:
+        await watch_mode(tracker, args, history, alerts)
+    else:
+        # Single check
+        async with aiohttp.ClientSession() as session:
+            await track_once(tracker, session, args, history)
+
+
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\n👋 Goodbye!")
+        sys.exit(0)
