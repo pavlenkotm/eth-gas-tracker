@@ -1,12 +1,13 @@
-# ⛽ ETH Gas Tracker
+# ⛽ ETH Gas Tracker v2.0
 
-Advanced Python CLI for monitoring Ethereum and EVM-compatible blockchain gas prices using `eth_feeHistory` (no API keys required).
+Advanced Python CLI & Web UI for monitoring Ethereum and EVM-compatible blockchain gas prices using `eth_feeHistory` (no API keys required).
 
 ## ✨ Features
 
-- **Multi-Network Support**: Ethereum, Polygon, Arbitrum, Optimism, BSC
+### Core Features
+- **Multi-Network Support**: Ethereum, Polygon, Arbitrum, Optimism, BSC, Base, zkSync Era, Avalanche
 - **Real-Time Monitoring**: Watch mode with auto-refresh
-- **Smart Alerts**: Notifications when gas drops below threshold
+- **Smart Alerts**: Multiple notification channels (CLI, Desktop, Webhooks)
 - **Historical Tracking**: Save and analyze price history
 - **Transaction Cost Calculator**: Estimates for different tx types (transfers, ERC-20, swaps, NFT)
 - **Statistics & Analytics**: Min/max/average with recommendations
@@ -14,6 +15,16 @@ Advanced Python CLI for monitoring Ethereum and EVM-compatible blockchain gas pr
 - **JSON Output**: For scripting and automation
 - **REST API Server**: Built-in HTTP API for integrations
 - **No API Keys**: Uses public RPC endpoints
+
+### 🆕 New in v2.0
+- **Network Comparison**: Compare gas prices across all networks simultaneously
+- **Data Export**: Export history to CSV, Excel, or JSON formats
+- **Price Prediction**: AI-powered gas price forecasting with multiple algorithms
+- **Desktop Notifications**: Native OS notifications (Windows, macOS, Linux)
+- **Webhook Integration**: Send alerts to Slack, Discord, Microsoft Teams, or custom webhooks
+- **Advanced Statistics**: Percentiles, volatility analysis, standard deviation, coefficient of variation
+- **Web UI**: Beautiful web-based dashboard with real-time updates
+- **New Networks**: Support for Base, zkSync Era, and Avalanche C-Chain
 
 ## 🚀 Quick Start
 
@@ -149,6 +160,199 @@ python -m ethgas.main --rpc https://rpc.ankr.com/eth
 python -m ethgas.main --rpc https://your-rpc-url.com --watch 10
 ```
 
+## 🆕 New Features in v2.0
+
+### Network Comparison
+
+Compare gas prices across all supported networks:
+
+```bash
+# Compare all networks (table format)
+python -m ethgas.main --compare
+
+# Compare with specific transaction type
+python -m ethgas.main --compare --compare-tx-type erc20
+
+# Compare in JSON format
+python -m ethgas.main --compare --json
+```
+
+Output example:
+```
+====================================================================================================
+GAS PRICE COMPARISON - Simple Transfer (21,000 gas)
+====================================================================================================
+Network              Base Fee        Priority        Max Fee         Cost (Native)   Cost (USD)
+----------------------------------------------------------------------------------------------------
+🏆 Polygon            25.34 gwei      1.50 gwei       26.84 gwei      0.000564 MATIC  $0.0005
+2. Base               12.50 gwei      1.00 gwei       13.50 gwei      0.000284 ETH    $0.6950
+3. Arbitrum One       0.15 gwei       0.01 gwei       0.16 gwei       0.000003 ETH    $0.0075
+```
+
+### Data Export
+
+Export historical data for analysis:
+
+```bash
+# Export to CSV
+python -m ethgas.main --export csv
+
+# Export to Excel with custom path
+python -m ethgas.main --export excel --export-path gas_data.xlsx
+
+# Export to JSON (last 1000 records)
+python -m ethgas.main --export json --export-limit 1000
+
+# Export specific network data
+python -m ethgas.main --network polygon --export csv
+```
+
+### Price Prediction
+
+Predict future gas prices based on historical data:
+
+```bash
+# Predict using moving average (default)
+python -m ethgas.main --predict
+
+# Predict using exponential weighted moving average
+python -m ethgas.main --predict --predict-method exponential
+
+# Predict using linear regression
+python -m ethgas.main --predict --predict-method linear
+
+# Predict for specific network
+python -m ethgas.main --network polygon --predict
+```
+
+Output example:
+```
+============================================================
+GAS PRICE PREDICTION (Moving Average)
+============================================================
+Predicted Base Fee:          24.50 gwei
+Predicted Priority Tip:       1.50 gwei
+Predicted Max Fee:           26.00 gwei
+------------------------------------------------------------
+Confidence:                   85.5%
+Trend:                        DECREASING
+============================================================
+```
+
+### Desktop Notifications
+
+Get native OS notifications when gas drops below threshold:
+
+```bash
+# Enable desktop notifications
+python -m ethgas.main --watch 10 --alert 30 --desktop-notify
+
+# Watch with notifications (no beep)
+python -m ethgas.main --watch 15 --alert 25 --desktop-notify
+```
+
+Notifications work on:
+- Windows (Windows 10+)
+- macOS (all versions)
+- Linux (with notification daemon)
+
+### Webhook Integration
+
+Send alerts to Slack, Discord, Teams, or custom webhooks:
+
+```bash
+# Single webhook URL
+python -m ethgas.main --watch 10 --alert 30 --webhook https://hooks.slack.com/services/YOUR/WEBHOOK/URL
+
+# Multiple webhooks
+python -m ethgas.main --watch 10 --alert 30 \
+  --webhook https://hooks.slack.com/... \
+  --webhook https://discord.com/api/webhooks/...
+
+# Load webhooks from file
+python -m ethgas.main --watch 10 --alert 30 --webhook-file webhooks.txt
+```
+
+#### Webhook File Format (`webhooks.txt`):
+```
+# Slack webhook
+https://hooks.slack.com/services/YOUR/WEBHOOK/URL
+
+# Discord webhook
+https://discord.com/api/webhooks/YOUR/WEBHOOK/ID/TOKEN
+
+# Microsoft Teams webhook
+https://outlook.office.com/webhook/YOUR/WEBHOOK/URL
+```
+
+Supported platforms:
+- Slack (auto-formatted)
+- Discord (auto-formatted)
+- Microsoft Teams (auto-formatted)
+- Custom HTTP endpoints (JSON payload)
+
+### Advanced Statistics
+
+View detailed statistical analysis with percentiles, volatility, and more:
+
+```bash
+# Show advanced statistics
+python -m ethgas.main --advanced-stats
+
+# Advanced stats for specific timeframe
+python -m ethgas.main --advanced-stats --stats-hours 12
+
+# Advanced stats for specific network
+python -m ethgas.main --network polygon --advanced-stats
+```
+
+Output example:
+```
+================================================================================
+ADVANCED GAS PRICE STATISTICS
+================================================================================
+Sample Size: 245 records
+
+BASE FEE STATISTICS (gwei):
+--------------------------------------------------------------------------------
+  Minimum:                   18.50
+  25th Percentile:           22.30
+  Median (50th):             25.40
+  Average (Mean):            26.75
+  75th Percentile:           31.20
+  90th Percentile:           38.50
+  95th Percentile:           42.80
+  Maximum:                   45.20
+
+  Range:                     26.70
+  Standard Deviation:         6.42
+  Variance:                  41.22
+  Coefficient of Var:        24.01%
+  Volatility:                Moderate
+================================================================================
+```
+
+### Web UI Dashboard
+
+Launch a beautiful web-based dashboard:
+
+```bash
+# Start Web UI (default: http://0.0.0.0:8080)
+python -m ethgas.main --web-ui
+
+# Custom host and port
+python -m ethgas.main --web-ui --host 127.0.0.1 --port 3000
+```
+
+Features:
+- Real-time gas prices for all networks
+- Auto-refresh with configurable intervals
+- Network comparison table
+- Beautiful responsive design
+- Works on desktop and mobile
+
+Access at: `http://localhost:8080`
+
 ## 🎨 Output Formats
 
 ### Simple Output
@@ -200,7 +404,7 @@ python -m ethgas.main --rpc https://your-rpc-url.com --watch 10
 
 ```
 Network Options:
-  --network {ethereum,polygon,arbitrum,optimism,bsc}
+  --network {ethereum,polygon,arbitrum,optimism,bsc,base,zksync,avalanche}
                         Network to monitor (default: ethereum)
   --rpc URL            Custom RPC URL (overrides network default)
 
@@ -229,6 +433,32 @@ API Server:
   --api                Start REST API server
   --host HOST          API server host (default: 0.0.0.0)
   --port PORT          API server port (default: 8080)
+
+🆕 New Features:
+Comparison:
+  --compare            Compare gas prices across all networks
+  --compare-tx-type    Transaction type for comparison (default: simple)
+
+Export:
+  --export {csv,excel,json}  Export historical data to file
+  --export-path PATH   Custom path for export file
+  --export-limit N     Limit number of records to export
+
+Prediction:
+  --predict            Predict future gas prices
+  --predict-method {moving_average,exponential,linear}
+                       Prediction algorithm (default: moving_average)
+
+Notifications:
+  --desktop-notify     Enable desktop notifications for alerts
+  --webhook URL        Webhook URL for alerts (can be used multiple times)
+  --webhook-file PATH  File containing webhook URLs (one per line)
+
+Advanced Analytics:
+  --advanced-stats     Show advanced statistics (percentiles, volatility, etc.)
+
+Web UI:
+  --web-ui             Start web-based user interface
 ```
 
 ## 📦 Supported Networks
@@ -240,6 +470,9 @@ API Server:
 | Arbitrum One | 42161 | ETH | arb1.arbitrum.io/rpc |
 | Optimism | 10 | ETH | mainnet.optimism.io |
 | BNB Smart Chain | 56 | BNB | bsc-dataseed.binance.org |
+| 🆕 Base | 8453 | ETH | mainnet.base.org |
+| 🆕 zkSync Era | 324 | ETH | mainnet.era.zksync.io |
+| 🆕 Avalanche C-Chain | 43114 | AVAX | api.avax.network/ext/bc/C/rpc |
 
 ## 💡 Transaction Types
 
@@ -280,9 +513,19 @@ MIT License - see LICENSE file for details
 
 ## 💻 Requirements
 
+### Core Requirements
 - Python 3.7+
-- aiohttp
-- python-dateutil
+- aiohttp >= 3.9
+- python-dateutil >= 2.8.0
+
+### Optional Requirements
+- openpyxl >= 3.1.0 (for Excel export)
+- plyer >= 2.1.0 (for desktop notifications)
+
+Install all dependencies:
+```bash
+pip install -r requirements.txt
+```
 
 ## 🎯 Use Cases
 
