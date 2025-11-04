@@ -36,6 +36,27 @@ NETWORKS = {
         "coingecko_id": "binancecoin",
         "explorer": "https://bscscan.com",
     },
+    "base": {
+        "name": "Base",
+        "rpc": "https://mainnet.base.org",
+        "chain_id": 8453,
+        "coingecko_id": "ethereum",  # Base использует ETH для газа
+        "explorer": "https://basescan.org",
+    },
+    "zksync": {
+        "name": "zkSync Era",
+        "rpc": "https://mainnet.era.zksync.io",
+        "chain_id": 324,
+        "coingecko_id": "ethereum",  # zkSync использует ETH для газа
+        "explorer": "https://explorer.zksync.io",
+    },
+    "avalanche": {
+        "name": "Avalanche C-Chain",
+        "rpc": "https://api.avax.network/ext/bc/C/rpc",
+        "chain_id": 43114,
+        "coingecko_id": "avalanche-2",
+        "explorer": "https://snowtrace.io",
+    },
 }
 
 # Gas costs for different transaction types (in gas units)
