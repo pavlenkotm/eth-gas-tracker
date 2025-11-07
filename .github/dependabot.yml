@@ -1,0 +1,107 @@
+# Dependabot configuration for automated dependency updates
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+
+version: 2
+updates:
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  # Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "python"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
+    open-pull-requests-limit: 10
+
+  # Solidity ERC-20
+  - package-ecosystem: "npm"
+    directory: "/examples/solidity/erc20-token"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "javascript"
+      - "solidity"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    versioning-strategy: increase
+
+  # Solidity ERC-721
+  - package-ecosystem: "npm"
+    directory: "/examples/solidity/erc721-nft"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "javascript"
+      - "solidity"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    versioning-strategy: increase
+
+  # TypeScript Wagmi DApp
+  - package-ecosystem: "npm"
+    directory: "/examples/typescript/wagmi-dapp"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "typescript"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    versioning-strategy: increase
+
+  # Rust Solana/Anchor
+  - package-ecosystem: "cargo"
+    directory: "/examples/rust/solana-anchor"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "rust"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  # Go Web3 Utils
+  - package-ecosystem: "gomod"
+    directory: "/examples/go/web3-utils"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "go"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  # Java Web3j
+  - package-ecosystem: "maven"
+    directory: "/examples/java/web3j-integration"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "java"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
