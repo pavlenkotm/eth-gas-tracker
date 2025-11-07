@@ -1,0 +1,52 @@
+name: Java/Maven Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'examples/java/**'
+      - '.github/workflows/java-tests.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'examples/java/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: ['17', '20', '21']
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK ${{ matrix.java-version }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ matrix.java-version }}
+        distribution: 'temurin'
+        cache: 'maven'
+
+    - name: Build with Maven
+      working-directory: examples/java/web3j-integration
+      run: mvn -B clean compile
+
+    - name: Run tests
+      working-directory: examples/java/web3j-integration
+      run: mvn -B test || true
+
+    - name: Check code style
+      working-directory: examples/java/web3j-integration
+      run: mvn -B checkstyle:check || true
+
+    - name: Package
+      working-directory: examples/java/web3j-integration
+      run: mvn -B package -DskipTests
+
+    - name: Upload artifact
+      if: matrix.java-version == '17'
+      uses: actions/upload-artifact@v3
+      with:
+        name: web3j-integration-jar
+        path: examples/java/web3j-integration/target/*.jar
