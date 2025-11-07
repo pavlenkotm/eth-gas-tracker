@@ -1,0 +1,22 @@
+name: simple-vault
+
+default_ecosystem: ethereum
+
+ethereum:
+  default_network: local
+  mainnet:
+    default_provider: alchemy
+  sepolia:
+    default_provider: alchemy
+
+vyper:
+  version: 0.3.10
+
+test:
+  runner: pytest
+  gas_limit: auto
+
+dependencies:
+  - name: OpenZeppelin
+    github: OpenZeppelin/openzeppelin-contracts
+    version: 5.0.0
