@@ -1,0 +1,82 @@
+name: Solidity Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'examples/solidity/**'
+      - '.github/workflows/solidity-tests.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'examples/solidity/**'
+
+jobs:
+  test-erc20:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: examples/solidity/erc20-token/package.json
+
+    - name: Install dependencies
+      working-directory: examples/solidity/erc20-token
+      run: npm ci
+
+    - name: Compile contracts
+      working-directory: examples/solidity/erc20-token
+      run: npx hardhat compile
+
+    - name: Run tests
+      working-directory: examples/solidity/erc20-token
+      run: npx hardhat test
+
+    - name: Check coverage
+      working-directory: examples/solidity/erc20-token
+      run: npx hardhat coverage || true
+
+  test-erc721:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: examples/solidity/erc721-nft/package.json
+
+    - name: Install dependencies
+      working-directory: examples/solidity/erc721-nft
+      run: npm ci
+
+    - name: Compile contracts
+      working-directory: examples/solidity/erc721-nft
+      run: npx hardhat compile
+
+    - name: Run tests
+      working-directory: examples/solidity/erc721-nft
+      run: npx hardhat test
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install Solhint
+      run: npm install -g solhint
+
+    - name: Lint Solidity files
+      run: |
+        solhint 'examples/solidity/**/*.sol' || true
