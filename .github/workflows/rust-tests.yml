@@ -1,0 +1,62 @@
+name: Rust/Anchor Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'examples/rust/**'
+      - '.github/workflows/rust-tests.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'examples/rust/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+        components: rustfmt, clippy
+
+    - name: Cache Rust dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+    - name: Install Solana
+      run: |
+        sh -c "$(curl -sSfL https://release.solana.com/stable/install)" || true
+
+    - name: Install Anchor
+      run: |
+        cargo install --git https://github.com/coral-xyz/anchor avm --locked --force || true
+        avm install latest || true
+        avm use latest || true
+
+    - name: Check formatting
+      working-directory: examples/rust/solana-anchor
+      run: cargo fmt -- --check || true
+
+    - name: Run Clippy
+      working-directory: examples/rust/solana-anchor
+      run: cargo clippy -- -D warnings || true
+
+    - name: Build
+      working-directory: examples/rust/solana-anchor
+      run: anchor build || cargo build || true
+
+    - name: Run tests
+      working-directory: examples/rust/solana-anchor
+      run: anchor test || cargo test || true

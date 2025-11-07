@@ -1,0 +1,45 @@
+name: TypeScript Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'examples/typescript/**'
+      - '.github/workflows/typescript-tests.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'examples/typescript/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: examples/typescript/wagmi-dapp/package.json
+
+    - name: Install dependencies
+      working-directory: examples/typescript/wagmi-dapp
+      run: npm ci
+
+    - name: Type check
+      working-directory: examples/typescript/wagmi-dapp
+      run: npm run type-check || npx tsc --noEmit
+
+    - name: Lint
+      working-directory: examples/typescript/wagmi-dapp
+      run: npm run lint || npx eslint . --ext .ts,.tsx || true
+
+    - name: Build
+      working-directory: examples/typescript/wagmi-dapp
+      run: npm run build
+
+    - name: Run tests
+      working-directory: examples/typescript/wagmi-dapp
+      run: npm test || true

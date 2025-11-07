@@ -1,0 +1,17 @@
+[package]
+name = "SimpleCoin"
+version = "1.0.0"
+authors = ["Web3 Multi-Language Playground"]
+
+[addresses]
+simple_coin = "_"
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-core.git"
+rev = "mainnet"
+subdir = "aptos-move/framework/aptos-framework"
+
+[dev-addresses]
+simple_coin = "0xcafe"
+
+[dev-dependencies]
