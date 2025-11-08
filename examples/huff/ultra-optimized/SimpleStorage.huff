@@ -1,0 +1,106 @@
+/// @title Simple Storage in Huff
+/// @notice Ultra-optimized storage contract using pure Huff
+/// @author Web3 Developer
+
+/// Interface
+#define function setValue(uint256) nonpayable returns ()
+#define function getValue() view returns (uint256)
+#define function increment() nonpayable returns ()
+
+/// Storage
+#define constant VALUE_SLOT = FREE_STORAGE_POINTER()
+
+/// Events
+#define event ValueSet(uint256)
+#define event ValueIncremented(uint256,uint256)
+
+/// @notice Main entry point - function dispatcher
+#define macro MAIN() = takes (0) returns (0) {
+    // Identify function selector
+    0x00 calldataload 0xE0 shr   // [selector]
+
+    // setValue(uint256) - 0x55241077
+    dup1 0x55241077 eq setValue jumpi
+
+    // getValue() - 0x20965255
+    dup1 0x20965255 eq getValue jumpi
+
+    // increment() - 0xd09de08a
+    dup1 0xd09de08a eq increment jumpi
+
+    // Revert if no match
+    0x00 0x00 revert
+
+    setValue:
+        SET_VALUE()
+    getValue:
+        GET_VALUE()
+    increment:
+        INCREMENT()
+}
+
+/// @notice Set storage value
+#define macro SET_VALUE() = takes (0) returns (0) {
+    // Load value from calldata (offset 4, skip selector)
+    0x04 calldataload              // [value]
+
+    // Store value
+    [VALUE_SLOT] sstore            // []
+
+    // Emit ValueSet event
+    0x00 mstore                    // Store value in memory
+    0x04 calldataload              // [value]
+    0x20 0x00                      // [offset, size, value]
+    __EVENT_HASH(ValueSet)         // [sig, offset, size, value]
+    log1                           // []
+
+    stop
+}
+
+/// @notice Get storage value
+#define macro GET_VALUE() = takes (0) returns (0) {
+    // Load value from storage
+    [VALUE_SLOT] sload             // [value]
+
+    // Store in memory for return
+    0x00 mstore                    // []
+
+    // Return 32 bytes
+    0x20 0x00 return
+}
+
+/// @notice Increment storage value by 1
+#define macro INCREMENT() = takes (0) returns (0) {
+    // Load current value
+    [VALUE_SLOT] sload             // [old_value]
+    dup1                           // [old_value, old_value]
+
+    // Increment
+    0x01 add                       // [new_value, old_value]
+
+    // Check for overflow
+    dup1 dup3 lt                   // [overflow?, new_value, old_value]
+    overflow jumpi                 // [new_value, old_value]
+
+    // Store new value
+    dup1                           // [new_value, new_value, old_value]
+    [VALUE_SLOT] sstore            // [new_value, old_value]
+
+    // Emit ValueIncremented event
+    0x00 mstore                    // [old_value]
+    0x20 mstore                    // []
+    0x40 0x00                      // [offset, size]
+    __EVENT_HASH(ValueIncremented) // [sig, offset, size]
+    log1                           // []
+
+    stop
+
+    overflow:
+        0x00 0x00 revert
+}
+
+/// @notice Constructor - initialize contract
+#define macro CONSTRUCTOR() = takes (0) returns (0) {
+    // Optionally initialize with a value
+    0x00 [VALUE_SLOT] sstore
+}

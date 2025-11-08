@@ -1,0 +1,103 @@
+name: 🌈 Language Showcase Update
+
+on:
+  schedule:
+    # Run daily at 8 AM UTC
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'examples/**'
+
+jobs:
+  update-showcase:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 🔍 Scan Language Examples
+        id: scan
+        run: |
+          echo "Scanning for language examples..."
+
+          declare -A languages
+          languages=(
+            ["cairo"]="🏺 Cairo (StarkNet)"
+            ["sway"]="⛽ Sway (Fuel)"
+            ["yul"]="⚡ Yul (EVM)"
+            ["huff"]="🔥 Huff (Ultra-optimized)"
+            ["solidity"]="📜 Solidity"
+            ["vyper"]="🐍 Vyper"
+            ["rust"]="🦀 Rust"
+            ["move"]="💎 Move"
+            ["go"]="🐹 Go"
+            ["typescript"]="⚡ TypeScript"
+            ["javascript"]="💛 JavaScript"
+            ["python"]="🐍 Python"
+            ["java"]="☕ Java"
+            ["elixir"]="💧 Elixir"
+            ["lua"]="🌙 Lua"
+            ["ruby"]="💎 Ruby"
+            ["julia"]="🔬 Julia"
+            ["scala"]="⚙️  Scala"
+            ["clojure"]="🔧 Clojure"
+            ["perl"]="🔮 Perl"
+            ["php"]="🐘 PHP"
+            ["powershell"]="⚡ PowerShell"
+            ["c"]="🔨 C"
+            ["nim"]="👑 Nim"
+            ["crystal"]="💎 Crystal"
+            ["fsharp"]="🔷 F#"
+            ["r"]="📊 R"
+            ["erlang"]="📡 Erlang"
+            ["ocaml"]="🐫 OCaml"
+            ["scheme"]="🎨 Scheme"
+            ["d"]="🔷 D"
+            ["odin"]="⚙️  Odin"
+            ["svelte"]="🦊 Svelte"
+            ["vue"]="🌐 Vue"
+            ["bash"]="🔧 Bash"
+            ["html-css"]="🎨 HTML/CSS"
+          )
+
+          echo "## 🌟 Available Language Examples" > .github/LANGUAGE_LIST.md
+          echo "" >> .github/LANGUAGE_LIST.md
+
+          for lang in "${!languages[@]}"; do
+            if [ -d "examples/$lang" ]; then
+              echo "- ${languages[$lang]}" >> .github/LANGUAGE_LIST.md
+            fi
+          done
+
+          echo "" >> .github/LANGUAGE_LIST.md
+          echo "**Total Languages:** $(ls -d examples/*/ 2>/dev/null | wc -l)" >> .github/LANGUAGE_LIST.md
+          echo "**Last Updated:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> .github/LANGUAGE_LIST.md
+
+      - name: 📝 Update Language Matrix
+        run: |
+          cat > .github/LANGUAGE_MATRIX.json << 'EOF'
+          {
+            "languages": {
+              "smart_contracts": ["solidity", "vyper", "cairo", "sway", "move", "yul", "huff"],
+              "frontend": ["typescript", "svelte", "vue", "elm", "astro", "html-css"],
+              "backend": ["go", "elixir", "scala", "ruby", "java", "nim", "crystal", "erlang", "clojure", "php"],
+              "scripting": ["python", "lua", "bash", "perl", "powershell", "scheme"],
+              "systems": ["rust", "c", "zig", "d", "odin", "cpp"],
+              "functional": ["haskell", "fsharp", "ocaml", "erlang"],
+              "data_science": ["julia", "r", "matlab"]
+            },
+            "total": 40,
+            "categories": 7
+          }
+          EOF
+
+      - name: 💾 Commit Language Updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/LANGUAGE_LIST.md .github/LANGUAGE_MATRIX.json
+          git commit -m "docs: update language showcase [skip ci]" || echo "No changes"
+          git push || echo "Nothing to push"
