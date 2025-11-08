@@ -1,0 +1,13 @@
+{
+  "languages": {
+    "smart_contracts": ["solidity", "vyper", "cairo", "sway", "move", "yul", "huff"],
+    "frontend": ["typescript", "svelte", "vue", "elm", "astro", "html-css"],
+    "backend": ["go", "elixir", "scala", "ruby", "java", "nim", "crystal", "erlang", "clojure", "php"],
+    "scripting": ["python", "lua", "bash", "perl", "powershell", "scheme"],
+    "systems": ["rust", "c", "zig", "d", "odin", "cpp"],
+    "functional": ["haskell", "fsharp", "ocaml", "erlang"],
+    "data_science": ["julia", "r", "matlab"]
+  },
+  "total": 40,
+  "categories": 7
+}

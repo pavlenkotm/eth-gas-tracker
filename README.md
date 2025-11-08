@@ -8,7 +8,7 @@
 ![GitHub license](https://img.shields.io/github/license/pavlenkotm/eth-gas-tracker)
 ![Commits](https://img.shields.io/github/commit-activity/m/pavlenkotm/eth-gas-tracker)
 
-**Master blockchain development across 15+ programming languages**
+**Master blockchain development across 40+ programming languages**
 
 [Explore Examples](#-examples-by-language) • [Documentation](#-documentation) • [Contributing](#-contributing)
 
@@ -18,7 +18,7 @@
 
 ## 🌟 Overview
 
-This repository is a comprehensive **Web3 development playground** showcasing blockchain development across **15+ programming languages and frameworks**. Whether you're building on Ethereum, Solana, Aptos, Cardano, or other chains, you'll find production-ready examples with complete documentation.
+This repository is a comprehensive **Web3 development playground** showcasing blockchain development across **40+ programming languages and frameworks**. Whether you're building on Ethereum, Solana, Aptos, StarkNet, Fuel, or other chains, you'll find production-ready examples with complete documentation.
 
 ### 🎯 Perfect For
 
@@ -38,18 +38,23 @@ This repository is a comprehensive **Web3 development playground** showcasing bl
       <h3>🌐 Multi-Chain Support</h3>
       <ul>
         <li>Ethereum & EVM chains</li>
-        <li>Solana</li>
-        <li>Aptos</li>
-        <li>Cardano</li>
+        <li>StarkNet (Cairo)</li>
+        <li>Fuel Network (Sway)</li>
+        <li>Solana (Rust/Anchor)</li>
+        <li>Aptos (Move)</li>
+        <li>Cardano (Haskell/Plutus)</li>
       </ul>
     </td>
     <td width="50%">
-      <h3>💻 15+ Languages</h3>
+      <h3>💻 40+ Languages</h3>
       <ul>
-        <li>Solidity, Vyper, Rust</li>
-        <li>Move, TypeScript, Go</li>
-        <li>Java, C++, Swift, Haskell</li>
-        <li>Python, Bash, HTML/CSS, Zig, Kotlin</li>
+        <li>Smart Contracts: Solidity, Vyper, Cairo, Sway, Move, Yul, Huff</li>
+        <li>Frontend: TypeScript, Svelte, Vue, Elm, Astro, HTML/CSS</li>
+        <li>Backend: Go, Elixir, Scala, Ruby, Nim, Crystal, Erlang</li>
+        <li>Scripting: Python, Lua, Perl, PHP, PowerShell, Bash</li>
+        <li>Systems: Rust, C, Zig, D, Odin, C++</li>
+        <li>Functional: Haskell, F#, OCaml, Clojure, Scheme</li>
+        <li>Data Science: Julia, R, MATLAB</li>
       </ul>
     </td>
   </tr>
@@ -245,10 +250,339 @@ open index.html
 
 ---
 
+### Next-Gen Smart Contract Languages
+
+#### 🏺 [Cairo](./examples/cairo)
+**StarkNet Smart Contracts**
+- 🔐 Zero-knowledge native
+- ⚡ L2 scaling solution
+- 🛡️ Built-in safety features
+- ✅ Scarb package manager
+
+```bash
+cd examples/cairo/starknet-token
+scarb build && scarb test
+```
+
+#### ⛽ [Sway](./examples/sway)
+**Fuel Network Contracts**
+- 🦀 Rust-inspired syntax
+- ⚡ UTXO-based execution
+- 🔒 Memory safety guarantees
+- 📊 Parallel transaction processing
+
+```bash
+cd examples/sway/fuel-contract
+forc build && forc test
+```
+
+#### ⚡ [Yul](./examples/yul)
+**Low-Level EVM Programming**
+- 💰 Maximum gas efficiency
+- 🔧 Direct opcode control
+- ⚡ 10-15% gas savings
+- 🎯 Performance-critical code
+
+```bash
+cd examples/yul/evm-optimized
+solc --strict-assembly Storage.yul
+```
+
+#### 🔥 [Huff](./examples/huff)
+**Ultra-Optimized EVM Bytecode**
+- 🚀 30-40% gas reduction
+- 🎯 Zero abstraction overhead
+- ⚙️ Manual stack management
+- 🏆 Used by Seaport, Uniswap V4
+
+```bash
+cd examples/huff/ultra-optimized
+huffc SimpleStorage.huff --bytecode
+```
+
+---
+
+### Frontend Frameworks
+
+#### 🦊 [Svelte](./examples/svelte)
+**Reactive Web3 Wallet**
+- ⚡ Truly reactive (no virtual DOM)
+- 📦 Tiny bundle size (~3KB)
+- 👛 MetaMask integration
+- 💸 Transaction sending
+
+```bash
+cd examples/svelte/web3-wallet
+npm install && npm run dev
+```
+
+#### 🌐 [Vue](./examples/vue)
+**Web3 DApp Dashboard**
+- 🎯 Composition API
+- 💎 Elegant reactivity
+- 🔄 State management
+- 📊 Real-time updates
+
+```bash
+cd examples/vue/dapp-dashboard
+npm install && npm run dev
+```
+
+---
+
+### Backend & Systems
+
+#### 💧 [Elixir](./examples/elixir)
+**Functional Web3 Client**
+- 🔄 Concurrent request handling
+- 🛡️ Fault-tolerant OTP
+- ⚡ Phoenix framework
+- 📊 Real-time PubSub
+
+```bash
+cd examples/elixir/phoenix-web3
+mix deps.get && iex -S mix
+```
+
+#### 💎 [Ruby](./examples/ruby)
+**Elegant Blockchain API**
+- 🎨 Expressive syntax
+- 🔧 Metaprogramming
+- 📦 RubyGems ecosystem
+- 🚀 Rails integration
+
+```bash
+cd examples/ruby/eth-client
+ruby web3_client.rb
+```
+
+#### ⚙️ [Scala](./examples/scala)
+**Type-Safe Functional Client**
+- 🎯 Functional programming
+- 🔒 Strong type system
+- ⚡ JVM performance
+- 🧩 Pattern matching
+
+```bash
+cd examples/scala/ethereum-client
+sbt run
+```
+
+#### 🔧 [Clojure](./examples/clojure)
+**Lisp-Powered Blockchain**
+- 🎨 Functional paradigm
+- 🔄 Immutable data structures
+- 📊 REPL-driven development
+- 🧩 Java interop
+
+```bash
+cd examples/clojure/smart-contract-tools
+lein run
+```
+
+---
+
+### Scripting & Automation
+
+#### 🌙 [Lua](./examples/lua)
+**Lightweight Blockchain Scripts**
+- 🪶 Minimal footprint
+- ⚡ Fast execution
+- 🎮 Game integration
+- 📱 Embedded systems
+
+```bash
+cd examples/lua/blockchain-script
+lua web3.lua
+```
+
+#### 🔮 [Perl](./examples/perl)
+**Text Processing & Web3**
+- 📝 Regex powerhouse
+- 🔧 System automation
+- 📊 Data extraction
+- 🕸️ Web scraping
+
+```bash
+cd examples/perl/web3-monitor
+perl web3_client.pl
+```
+
+#### 🐘 [PHP](./examples/php)
+**Server-Side Web3**
+- 🌐 Web backend integration
+- 💰 Payment processing
+- 🔐 API endpoints
+- 📊 Admin dashboards
+
+```bash
+cd examples/php/dapp-backend
+php Web3Client.php
+```
+
+#### ⚡ [PowerShell](./examples/powershell)
+**Enterprise Blockchain Automation**
+- 🏢 Windows integration
+- 🔧 DevOps workflows
+- 📊 Monitoring scripts
+- 🚀 CI/CD pipelines
+
+```bash
+cd examples/powershell/deployment-automation
+pwsh Web3-Utils.ps1
+```
+
+---
+
+### Systems Programming
+
+#### 🔨 [C](./examples/c)
+**High-Performance Crypto**
+- ⚡ Bare metal speed
+- 🔐 Keccak-256 hashing
+- 🧮 Elliptic curves
+- 📊 Zero overhead
+
+```bash
+cd examples/c/evm-crypto
+gcc -o keccak keccak256.c -lcurl -ljson-c -lssl -lcrypto
+./keccak
+```
+
+#### 👑 [Nim](./examples/nim)
+**Expressive Systems Language**
+- 🎨 Python-like syntax
+- ⚡ C-level performance
+- 🔧 Metaprogramming
+- 📦 Package manager
+
+```bash
+cd examples/nim/crypto-lib
+nim c -r web3.nim
+```
+
+#### 💎 [Crystal](./examples/crystal)
+**Ruby Performance**
+- 💎 Ruby-inspired syntax
+- ⚡ Compiled to native code
+- 🔒 Type safety
+- 🚀 Fast execution
+
+```bash
+cd examples/crystal/blockchain-api
+crystal run web3_client.cr
+```
+
+#### 🔷 [D](./examples/d)
+**Modern Systems Language**
+- ⚡ High performance
+- 🔧 Metaprogramming
+- 🧩 Template system
+- 📊 Memory safety
+
+```bash
+cd examples/d/high-performance
+dub run
+```
+
+#### ⚙️ [Odin](./examples/odin)
+**Joy of Programming**
+- 🎯 Simple & readable
+- ⚡ Fast compilation
+- 🔧 Low-level control
+- 📦 Minimal runtime
+
+```bash
+cd examples/odin/systems-crypto
+odin run web3.odin
+```
+
+---
+
+### Functional Programming
+
+#### 🔷 [F#](./examples/fsharp)
+**Functional-First .NET**
+- 🎯 Type inference
+- 🔄 Async workflows
+- 📊 Pattern matching
+- 🧩 LINQ integration
+
+```bash
+cd examples/fsharp/defi-analytics
+dotnet run
+```
+
+#### 🐫 [OCaml](./examples/ocaml)
+**Type-Safe Contracts**
+- 🔒 Strong type system
+- ⚡ Fast compilation
+- 🧩 Pattern matching
+- 📚 Formal verification
+
+```bash
+cd examples/ocaml/type-safe-contracts
+dune build && dune exec web3
+```
+
+#### 🎨 [Scheme](./examples/scheme)
+**Lisp Blockchain**
+- 🎨 Minimalist design
+- 🔄 Macros & metaprogramming
+- 📚 Academic foundations
+- 🧩 Homoiconicity
+
+```bash
+cd examples/scheme/lisp-blockchain
+guile web3.scm
+```
+
+#### 📡 [Erlang](./examples/erlang)
+**Distributed Blockchain Nodes**
+- 🔄 Massive concurrency
+- 🛡️ Fault tolerance
+- 📡 Distributed systems
+- ⚡ Hot code reloading
+
+```bash
+cd examples/erlang/distributed-node
+erl -compile web3_client
+```
+
+---
+
+### Data Science & Analytics
+
+#### 🔬 [Julia](./examples/julia)
+**High-Performance Analytics**
+- ⚡ Python syntax, C speed
+- 📊 Statistical analysis
+- 📈 Data visualization
+- 🧮 Numerical computing
+
+```bash
+cd examples/julia/crypto-analysis
+julia blockchain_analysis.jl
+```
+
+#### 📊 [R](./examples/r)
+**Statistical Blockchain Analysis**
+- 📈 ggplot2 visualization
+- 📊 Statistical modeling
+- 🔬 Research-grade analytics
+- 📉 Time series analysis
+
+```bash
+cd examples/r/nft-analytics
+Rscript web3_analysis.R
+```
+
+---
+
 ### Additional Languages
 
 <details>
-<summary><b>🔽 Click to expand</b></summary>
+<summary><b>🔽 Click to expand more</b></summary>
 
 #### ⚙️ C++ - Crypto Primitives
 - Hashing algorithms
