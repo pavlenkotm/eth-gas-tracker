@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+import aiohttp
 from aiohttp import web
 from typing import Dict
 
@@ -62,7 +63,7 @@ class GasAPI:
         )
 
         try:
-            async with web.ClientSession() as session:
+            async with aiohttp.ClientSession() as session:
                 gas_data = await tracker.get_gas_data(session)
 
                 # Calculate costs for different tx types

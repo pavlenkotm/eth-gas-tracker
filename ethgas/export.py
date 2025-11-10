@@ -25,9 +25,9 @@ class DataExporter:
         fieldnames = [
             "timestamp",
             "network",
-            "base_fee_gwei",
-            "priority_tip_gwei",
-            "max_fee_gwei",
+            "base_fee",
+            "priority_tip",
+            "max_fee",
             "token_price_usd"
         ]
 
@@ -89,9 +89,9 @@ class DataExporter:
         for row_num, record in enumerate(records, 2):
             ws.cell(row=row_num, column=1, value=record.get("timestamp", ""))
             ws.cell(row=row_num, column=2, value=record.get("network", ""))
-            ws.cell(row=row_num, column=3, value=record.get("base_fee_gwei", 0))
-            ws.cell(row=row_num, column=4, value=record.get("priority_tip_gwei", 0))
-            ws.cell(row=row_num, column=5, value=record.get("max_fee_gwei", 0))
+            ws.cell(row=row_num, column=3, value=record.get("base_fee", 0))
+            ws.cell(row=row_num, column=4, value=record.get("priority_tip", 0))
+            ws.cell(row=row_num, column=5, value=record.get("max_fee", 0))
             ws.cell(row=row_num, column=6, value=record.get("token_price_usd", 0))
 
         # Auto-adjust column widths
