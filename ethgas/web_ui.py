@@ -70,13 +70,14 @@ class WebUI:
             )
 
         network = NETWORKS[network_id]
-        tracker = GasTracker(network["rpc"], network["coingecko_id"])
+        tracker = GasTracker(network["rpc"], network["coingecko_id"], network["name"])
 
         try:
-            data = await tracker.get_gas_data()
-            data["network"] = network["name"]
-            data["network_id"] = network_id
-            return web.json_response(data)
+            async with aiohttp.ClientSession() as session:
+                data = await tracker.get_gas_data(session)
+                data["network"] = network["name"]
+                data["network_id"] = network_id
+                return web.json_response(data)
         except Exception as e:
             return web.json_response(
                 {"error": str(e)},
@@ -431,26 +432,26 @@ class WebUI:
 
             if (gasData.error) {
                 content += `<div class="error">❌ Error: ${gasData.error}</div>`;
-            } else if (!gasData.base_fee_gwei) {
+            } else if (!gasData.base_fee) {
                 content += `<div class="loading">Loading...</div>`;
             } else {
-                const indicator = getPriceIndicator(gasData.base_fee_gwei);
+                const indicator = getPriceIndicator(gasData.base_fee);
                 content += `
                     <div class="gas-info">
                         <div class="gas-row">
                             <span class="gas-label">Base Fee:</span>
                             <span class="gas-value">
-                                ${gasData.base_fee_gwei.toFixed(2)} gwei
+                                ${gasData.base_fee.toFixed(2)} gwei
                                 <span class="price-indicator ${indicator}"></span>
                             </span>
                         </div>
                         <div class="gas-row">
                             <span class="gas-label">Priority Tip:</span>
-                            <span class="gas-value">${gasData.priority_tip_gwei.toFixed(2)} gwei</span>
+                            <span class="gas-value">${gasData.priority_tip.toFixed(2)} gwei</span>
                         </div>
                         <div class="gas-row">
                             <span class="gas-label">Max Fee:</span>
-                            <span class="gas-value">${gasData.max_fee_gwei.toFixed(2)} gwei</span>
+                            <span class="gas-value">${gasData.max_fee.toFixed(2)} gwei</span>
                         </div>
                         ${gasData.token_price_usd ? `
                         <div class="gas-row">
@@ -525,13 +526,13 @@ class WebUI:
             // Calculate costs for simple transfer
             const costs = [];
             for (const [networkId, gasData] of Object.entries(data)) {
-                if (!gasData.error && gasData.max_fee_gwei) {
-                    const costNative = (gasData.max_fee_gwei * 1e-9) * 21000;
+                if (!gasData.error && gasData.max_fee) {
+                    const costNative = (gasData.max_fee * 1e-9) * 21000;
                     const costUsd = costNative * (gasData.token_price_usd || 0);
                     costs.push({
                         network: gasData.network || networkId,
-                        baseFee: gasData.base_fee_gwei,
-                        maxFee: gasData.max_fee_gwei,
+                        baseFee: gasData.base_fee,
+                        maxFee: gasData.max_fee,
                         costUsd: costUsd
                     });
                 }

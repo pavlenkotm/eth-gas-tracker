@@ -51,8 +51,8 @@ class GasPredictor:
         first_half = recent_records[:mid_point]
         second_half = recent_records[mid_point:]
 
-        first_avg = statistics.mean(r.get("base_fee_gwei", 0) for r in first_half)
-        second_avg = statistics.mean(r.get("base_fee_gwei", 0) for r in second_half)
+        first_avg = statistics.mean(r.get("base_fee", 0) for r in first_half)
+        second_avg = statistics.mean(r.get("base_fee", 0) for r in second_half)
 
         # Calculate percentage change
         if first_avg == 0:
@@ -95,8 +95,8 @@ class GasPredictor:
     def _predict_moving_average(self, window: int = 10) -> Dict:
         """Simple moving average prediction."""
         recent = self.records[-window:]
-        base_fees = [r.get("base_fee_gwei", 0) for r in recent]
-        priority_tips = [r.get("priority_tip_gwei", 0) for r in recent]
+        base_fees = [r.get("base_fee", 0) for r in recent]
+        priority_tips = [r.get("priority_tip", 0) for r in recent]
 
         predicted_base = statistics.mean(base_fees)
         predicted_priority = statistics.mean(priority_tips)
@@ -112,9 +112,9 @@ class GasPredictor:
 
         return {
             "method": "moving_average",
-            "predicted_base_fee_gwei": round(predicted_base, 2),
-            "predicted_priority_tip_gwei": round(predicted_priority, 2),
-            "predicted_max_fee_gwei": round(predicted_max, 2),
+            "predicted_base_fee": round(predicted_base, 2),
+            "predicted_priority_tip": round(predicted_priority, 2),
+            "predicted_max_fee": round(predicted_max, 2),
             "confidence": round(confidence, 1),
             "trend": self.get_trend(),
             "sample_size": len(recent)
@@ -125,8 +125,8 @@ class GasPredictor:
         if len(self.records) < 2:
             return {"error": "Insufficient data"}
 
-        base_fees = [r.get("base_fee_gwei", 0) for r in self.records]
-        priority_tips = [r.get("priority_tip_gwei", 0) for r in self.records]
+        base_fees = [r.get("base_fee", 0) for r in self.records]
+        priority_tips = [r.get("priority_tip", 0) for r in self.records]
 
         # Calculate EMA
         ema_base = base_fees[0]
@@ -148,9 +148,9 @@ class GasPredictor:
 
         return {
             "method": "exponential_moving_average",
-            "predicted_base_fee_gwei": round(ema_base, 2),
-            "predicted_priority_tip_gwei": round(ema_priority, 2),
-            "predicted_max_fee_gwei": round(predicted_max, 2),
+            "predicted_base_fee": round(ema_base, 2),
+            "predicted_priority_tip": round(ema_priority, 2),
+            "predicted_max_fee": round(predicted_max, 2),
             "confidence": round(confidence, 1),
             "trend": self.get_trend(),
             "alpha": alpha
@@ -166,7 +166,7 @@ class GasPredictor:
         n = len(recent)
 
         # Simple linear regression: y = mx + b
-        base_fees = [r.get("base_fee_gwei", 0) for r in recent]
+        base_fees = [r.get("base_fee", 0) for r in recent]
         x = list(range(n))
 
         # Calculate slope and intercept
@@ -188,7 +188,7 @@ class GasPredictor:
         predicted_base = max(0, predicted_base)  # Can't be negative
 
         # Priority tip prediction (use simple average)
-        priority_tips = [r.get("priority_tip_gwei", 0) for r in recent]
+        priority_tips = [r.get("priority_tip", 0) for r in recent]
         predicted_priority = statistics.mean(priority_tips)
         predicted_max = predicted_base + predicted_priority
 
@@ -201,9 +201,9 @@ class GasPredictor:
 
         return {
             "method": "linear_regression",
-            "predicted_base_fee_gwei": round(predicted_base, 2),
-            "predicted_priority_tip_gwei": round(predicted_priority, 2),
-            "predicted_max_fee_gwei": round(predicted_max, 2),
+            "predicted_base_fee": round(predicted_base, 2),
+            "predicted_priority_tip": round(predicted_priority, 2),
+            "predicted_max_fee": round(predicted_max, 2),
             "confidence": round(confidence, 1),
             "trend": self.get_trend(),
             "slope": round(slope, 4),
@@ -231,7 +231,7 @@ class GasPredictor:
                 continue
 
             hour = dt.hour
-            base_fee = record.get("base_fee_gwei", 0)
+            base_fee = record.get("base_fee", 0)
 
             if hour not in hourly_avg:
                 hourly_avg[hour] = []
@@ -275,9 +275,9 @@ class GasPredictor:
         lines.append("=" * 60)
         lines.append(f"GAS PRICE PREDICTION ({prediction.get('method', 'unknown').replace('_', ' ').title()})")
         lines.append("=" * 60)
-        lines.append(f"Predicted Base Fee:      {prediction['predicted_base_fee_gwei']:>8.2f} gwei")
-        lines.append(f"Predicted Priority Tip:  {prediction['predicted_priority_tip_gwei']:>8.2f} gwei")
-        lines.append(f"Predicted Max Fee:       {prediction['predicted_max_fee_gwei']:>8.2f} gwei")
+        lines.append(f"Predicted Base Fee:      {prediction['predicted_base_fee']:>8.2f} gwei")
+        lines.append(f"Predicted Priority Tip:  {prediction['predicted_priority_tip']:>8.2f} gwei")
+        lines.append(f"Predicted Max Fee:       {prediction['predicted_max_fee']:>8.2f} gwei")
         lines.append("-" * 60)
         lines.append(f"Confidence:              {prediction['confidence']:>8.1f}%")
         lines.append(f"Trend:                   {prediction['trend'].upper()}")

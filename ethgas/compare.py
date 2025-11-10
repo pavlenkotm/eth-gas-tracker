@@ -1,6 +1,7 @@
 """Network comparison functionality."""
 import asyncio
 import json
+import aiohttp
 from typing import Dict, List, Optional
 from .tracker import GasTracker
 from .networks import NETWORKS, TX_TYPES
@@ -15,27 +16,28 @@ class NetworkComparator:
 
     async def get_all_gas_data(self) -> Dict[str, dict]:
         """Fetch gas data from all networks in parallel."""
-        tasks = []
-        network_names = []
+        async with aiohttp.ClientSession() as session:
+            tasks = []
+            network_names = []
 
-        for network_id in self.networks:
-            if network_id not in NETWORKS:
-                continue
-            network = NETWORKS[network_id]
-            tracker = GasTracker(network["rpc"], network["coingecko_id"])
-            tasks.append(tracker.get_gas_data())
-            network_names.append(network_id)
+            for network_id in self.networks:
+                if network_id not in NETWORKS:
+                    continue
+                network = NETWORKS[network_id]
+                tracker = GasTracker(network["rpc"], network["coingecko_id"], network["name"])
+                tasks.append(tracker.get_gas_data(session))
+                network_names.append(network_id)
 
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+            results = await asyncio.gather(*tasks, return_exceptions=True)
 
-        data = {}
-        for network_id, result in zip(network_names, results):
-            if isinstance(result, Exception):
-                data[network_id] = {"error": str(result)}
-            else:
-                data[network_id] = result
+            data = {}
+            for network_id, result in zip(network_names, results):
+                if isinstance(result, Exception):
+                    data[network_id] = {"error": str(result)}
+                else:
+                    data[network_id] = result
 
-        return data
+            return data
 
     def format_comparison_table(self, data: Dict[str, dict], tx_type: str = "simple") -> str:
         """Format comparison as ASCII table."""
@@ -60,9 +62,9 @@ class NetworkComparator:
                 continue
 
             network_name = NETWORKS[network_id]["name"]
-            base_fee = network_data.get("base_fee_gwei", 0)
-            priority_tip = network_data.get("priority_tip_gwei", 0)
-            max_fee = network_data.get("max_fee_gwei", 0)
+            base_fee = network_data.get("base_fee", 0)
+            priority_tip = network_data.get("priority_tip", 0)
+            max_fee = network_data.get("max_fee", 0)
             token_price = network_data.get("token_price_usd", 0)
 
             # Calculate cost
@@ -137,7 +139,7 @@ class NetworkComparator:
             if "error" in network_data:
                 continue
 
-            max_fee = network_data.get("max_fee_gwei", 0)
+            max_fee = network_data.get("max_fee", 0)
             token_price = network_data.get("token_price_usd", 0)
 
             cost_native = (max_fee * 1e-9) * gas_units
