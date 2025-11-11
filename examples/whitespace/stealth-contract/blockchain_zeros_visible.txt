@@ -1,0 +1,12 @@
+; Print "0x" - Ethereum address/hash prefix
+; S = Space, T = Tab, L = Line Feed
+
+; Push 48 ('0')
+S S S T   S T T   S S S L  ; Push 48 (ASCII '0')
+T L S S                     ; Output character
+
+; Push 120 ('x')
+S S S T   T   T T T   S S L  ; Push 120 (ASCII 'x')
+T L S S                     ; Output character
+
+L L L                       ; End program
