@@ -1,0 +1,44 @@
+; This is the VISIBLE version of hello_eth.ws
+; S = Space, T = Tab, L = Line Feed
+
+; Push 72 ('H') and print
+S S S T   S S T   S S S L  ; Push 72
+T L S S                     ; Output character
+
+; Push 101 ('e')
+S S S T   T   S S T S T L  ; Push 101
+T L S S                     ; Output character
+
+; Push 108 ('l')
+S S S T   T   S T T S S L  ; Push 108
+T L S S                     ; Output character
+
+; Push 108 ('l')
+S S S T   T   S T T S S L  ; Push 108
+T L S S                     ; Output character
+
+; Push 111 ('o')
+S S S T   T   S T T T T L  ; Push 111
+T L S S                     ; Output character
+
+; Push 32 (' ')
+S S S T   S     S     S L  ; Push 32
+T L S S                     ; Output character
+
+; Push 69 ('E')
+S S S T   S S S T S T L    ; Push 69
+T L S S                     ; Output character
+
+; Push 116 ('t')
+S S S T   T   T S T S S L  ; Push 116
+T L S S                     ; Output character
+
+; Push 104 ('h')
+S S S T   T   S T   S S L  ; Push 104
+T L S S                     ; Output character
+
+; Push 33 ('!')
+S S S T   S     S   S T L  ; Push 33
+T L S S                     ; Output character
+
+L L L                       ; End program

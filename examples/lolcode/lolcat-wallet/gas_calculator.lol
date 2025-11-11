@@ -1,0 +1,47 @@
+HAI 1.2
+    BTW LOLCAT GAS PRICE CALCULATOR
+
+    VISIBLE "=^o^= GAS PRICE CHECKER =^o^="
+    VISIBLE ""
+
+    BTW Set gas parameters
+    I HAS A BASE_FEE ITZ 30
+    I HAS A PRIORITY ITZ 2
+    I HAS A GAS_LIMIT ITZ 21000
+
+    VISIBLE SMOOSH "Base Fee: " BASE_FEE " gwei" MKAY
+    VISIBLE SMOOSH "Priority: " PRIORITY " gwei" MKAY
+    VISIBLE ""
+
+    BTW Calculate total fee
+    I HAS A TOTAL_FEE ITZ SUM OF BASE_FEE AN PRIORITY
+    VISIBLE SMOOSH "Total Fee: " TOTAL_FEE " gwei" MKAY
+
+    BTW Check if gas is cheap
+    BOTH SAEM TOTAL_FEE AN SMALLR OF TOTAL_FEE AN 50
+    O RLY?
+        YA RLY
+            VISIBLE ""
+            VISIBLE "CHEEZBURGER TIMEZ! GAS IZ CHEAP!"
+            VISIBLE "SEND UR TXNZ NAO!"
+        NO WAI
+            VISIBLE ""
+            VISIBLE "OH NOES! GAS IZ EXPENSIVE!"
+            VISIBLE "WAIT FOR BETTR PRICEZ"
+    OIC
+
+    VISIBLE ""
+
+    BTW Loop through different gas prices
+    I HAS A COUNTER ITZ 0
+    I HAS A MAX ITZ 3
+
+    VISIBLE "Gas price history (last 3 blocks):"
+    IM IN YR LOOP UPPIN YR COUNTER TIL BOTH SAEM COUNTER AN MAX
+        I HAS A SAMPLE_GAS ITZ SUM OF 20 AN PRODUKT OF COUNTER AN 5
+        VISIBLE SMOOSH "  Block -" COUNTER ": " SAMPLE_GAS " gwei" MKAY
+    IM OUTTA YR LOOP
+
+    VISIBLE ""
+    VISIBLE "I CAN HAZ CHEAP GAS PLZ? ^.^"
+KTHXBYE

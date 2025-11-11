@@ -1,0 +1,28 @@
+; Block number counter: prints numbers 1, 2, 3
+; S = Space, T = Tab, L = Line Feed
+
+; Initialize counter at 1
+S S S T L                   ; Push 1
+L S S S S S S S S S S L     ; Label: LOOP
+
+; Duplicate and print
+S L S                       ; Duplicate top
+T L S T                     ; Output as number
+
+; Push 10 (newline) and print
+S S S T S T S L             ; Push 10
+T L S S                     ; Output character
+
+; Increment
+S S S T L                   ; Push 1
+T S S S                     ; Add
+
+; Duplicate and push 3
+S L S                       ; Duplicate
+S S S T T L                 ; Push 3
+
+; If less than 4, jump back
+T S S T                     ; Subtract
+L T S S S S S S S S S L     ; Jump if negative to LOOP
+
+L L L                       ; End

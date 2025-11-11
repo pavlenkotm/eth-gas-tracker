@@ -8,7 +8,7 @@
 ![GitHub license](https://img.shields.io/github/license/pavlenkotm/eth-gas-tracker)
 ![Commits](https://img.shields.io/github/commit-activity/m/pavlenkotm/eth-gas-tracker)
 
-**Master blockchain development across 40+ programming languages**
+**Master blockchain development across 45+ programming languages (including exotic ones!)**
 
 [Explore Examples](#-examples-by-language) • [Documentation](#-documentation) • [Contributing](#-contributing)
 
@@ -18,7 +18,7 @@
 
 ## 🌟 Overview
 
-This repository is a comprehensive **Web3 development playground** showcasing blockchain development across **40+ programming languages and frameworks**. Whether you're building on Ethereum, Solana, Aptos, StarkNet, Fuel, or other chains, you'll find production-ready examples with complete documentation.
+This repository is a comprehensive **Web3 development playground** showcasing blockchain development across **45+ programming languages and frameworks** - from production-ready to mind-bendingly esoteric! Whether you're building on Ethereum, Solana, Aptos, StarkNet, Fuel, or other chains, you'll find examples ranging from professional smart contracts to hilarious esoteric languages.
 
 ### 🎯 Perfect For
 
@@ -46,7 +46,7 @@ This repository is a comprehensive **Web3 development playground** showcasing bl
       </ul>
     </td>
     <td width="50%">
-      <h3>💻 40+ Languages</h3>
+      <h3>💻 45+ Languages</h3>
       <ul>
         <li>Smart Contracts: Solidity, Vyper, Cairo, Sway, Move, Yul, Huff</li>
         <li>Frontend: TypeScript, Svelte, Vue, Elm, Astro, HTML/CSS</li>
@@ -55,6 +55,7 @@ This repository is a comprehensive **Web3 development playground** showcasing bl
         <li>Systems: Rust, C, Zig, D, Odin, C++</li>
         <li>Functional: Haskell, F#, OCaml, Clojure, Scheme</li>
         <li>Data Science: Julia, R, MATLAB</li>
+        <li>🎨 <strong>Esoteric: Brainfuck, Whitespace, LOLCODE, Befunge, ArnoldC</strong></li>
       </ul>
     </td>
   </tr>
@@ -579,6 +580,72 @@ Rscript web3_analysis.R
 
 ---
 
+### Esoteric & Fun Languages 🎨
+
+#### 🧠 [Brainfuck](./examples/brainfuck)
+**The Minimalist's Nightmare**
+- Only 8 commands (><+-.,\[\])
+- Turing-complete language
+- "Hello Blockchain" in pure minimalism
+- Stack-based like EVM
+
+```bash
+cd examples/brainfuck/blockchain-hash
+bf hello_blockchain.bf
+```
+
+#### 👻 [Whitespace](./examples/whitespace)
+**The Invisible Language**
+- Code using only spaces, tabs, and newlines
+- All other characters are comments
+- Steganographic programming
+- Stack + Heap architecture
+
+```bash
+cd examples/whitespace/stealth-contract
+wspace hello_eth.ws
+```
+
+#### 😹 [LOLCODE](./examples/lolcode)
+**I CAN HAZ BLOCKCHAIN?**
+- Based on lolcat memes
+- `HAI` to start, `KTHXBYE` to end
+- `I HAS A BALANCE ITZ 42`
+- Most fun language ever
+
+```bash
+cd examples/lolcode/lolcat-wallet
+lci wallet_balance.lol
+```
+
+#### 🎮 [Befunge](./examples/befunge)
+**2D Programming Grid**
+- Code flows in 2D space (↑↓←→)
+- Stack-based execution
+- Self-modifying code
+- Perfect for Merkle tree visualization
+
+```bash
+cd examples/befunge/2d-blockchain
+pyfunge hello_blockchain.bf
+```
+
+#### 💪 [ArnoldC](./examples/arnoldc)
+**GET TO THE BLOCKCHAIN!**
+- Every keyword is an Arnold Schwarzenegger quote
+- `IT'S SHOWTIME` = start program
+- `TALK TO THE HAND` = print
+- `I'LL BE BACK` = return
+- `HASTA LA VISTA, BABY` = end function
+
+```bash
+cd examples/arnoldc/terminator-chain
+./arnoldc hello_blockchain.arnoldc
+java hello_blockchain
+```
+
+---
+
 ### Additional Languages
 
 <details>
@@ -684,6 +751,11 @@ npm install && npm run dev
 | **Haskell** | Smart Contracts | Plutus | Cardano | 🚧 Basic |
 | **Zig** | WASM | Custom | - | 🚧 Basic |
 | **Kotlin** | Mobile | Web3j-Android | Ethereum | 🚧 Basic |
+| **🧠 Brainfuck** | Esoteric/Educational | Interpreter | - | ✅ Complete |
+| **👻 Whitespace** | Esoteric/Educational | Interpreter | - | ✅ Complete |
+| **😹 LOLCODE** | Esoteric/Educational | lci | - | ✅ Complete |
+| **🎮 Befunge** | Esoteric/Educational | pyfunge | - | ✅ Complete |
+| **💪 ArnoldC** | Esoteric/Educational | Java bytecode | - | ✅ Complete |
 
 ---
 
