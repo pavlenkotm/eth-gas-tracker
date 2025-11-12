@@ -1,39 +1,52 @@
 ## 🌟 Available Language Examples
 
+### Smart Contract Languages
+- 📜 Solidity (Ethereum, EVM)
+- 🐍 Vyper (Python-style smart contracts)
+- 💎 Move (Aptos, Sui)
+- 🦀 Rust (Solana, NEAR)
 - 🏺 Cairo (StarkNet)
+- 🦑 Ink! (Polkadot / Substrate)
+- 🔷 Clarity (Stacks / Bitcoin L2)
+- 🎭 Motoko (DFINITY / ICP)
+- λ Haskell (Cardano smart contracts)
+- 🐹 Go (Cosmos SDK)
+- ⚡ Yul (EVM)
+- 🔥 Huff (Ultra-optimized)
+- ⛽ Sway (Fuel)
+
+### Frontend & Web
+- ⚡ TypeScript
+- 🦊 Svelte
+- 🌐 Vue
+- 🎨 HTML/CSS
+
+### Backend & Systems
 - 💎 Crystal
 - ☕ Java
-- 🎨 Scheme
-- ⚡ Yul (EVM)
-- 📜 Solidity
-- ⚡ PowerShell
-- 🔬 Julia
-- 🐍 Vyper
-- 🔥 Huff (Ultra-optimized)
 - ⚙️  Scala
 - 👑 Nim
 - 💎 Ruby
-- 🔮 Perl
-- 📊 R
-- 🔷 F#
-- 🔷 D
-- 🔨 C
-- 🔧 Bash
-- 💎 Move
-- ⚡ TypeScript
-- 🦊 Svelte
-- 🔧 Clojure
-- 🐫 OCaml
-- 🌐 Vue
-- 🎨 HTML/CSS
 - 🐘 PHP
 - 💧 Elixir
 - ⚙️  Odin
-- 🌙 Lua
-- 🐹 Go
-- 🦀 Rust
-- ⛽ Sway (Fuel)
+- 🔷 D
+- 🔨 C
 - 📡 Erlang
+- 🔧 Clojure
+- 🐫 OCaml
 
-**Total Languages:** 39
-**Last Updated:** 2025-11-12 08:14:20 UTC
+### Scripting & Automation
+- 🔧 Bash
+- 🌙 Lua
+- 🔮 Perl
+- ⚡ PowerShell
+- 🎨 Scheme
+
+### Data Science
+- 🔬 Julia
+- 📊 R
+- 🔷 F#
+
+**Total Languages:** 42
+**Last Updated:** 2025-11-12 19:30:00 UTC

@@ -8,7 +8,7 @@
 ![GitHub license](https://img.shields.io/github/license/pavlenkotm/eth-gas-tracker)
 ![Commits](https://img.shields.io/github/commit-activity/m/pavlenkotm/eth-gas-tracker)
 
-**Master blockchain development across 45+ programming languages (including exotic ones!)**
+**Master blockchain development across 50+ programming languages (including exotic ones!)**
 
 [Explore Examples](#-examples-by-language) • [Documentation](#-documentation) • [Contributing](#-contributing)
 
@@ -18,7 +18,7 @@
 
 ## 🌟 Overview
 
-This repository is a comprehensive **Web3 development playground** showcasing blockchain development across **45+ programming languages and frameworks** - from production-ready to mind-bendingly esoteric! Whether you're building on Ethereum, Solana, Aptos, StarkNet, Fuel, or other chains, you'll find examples ranging from professional smart contracts to hilarious esoteric languages.
+This repository is a comprehensive **Web3 development playground** showcasing blockchain development across **50+ programming languages and frameworks** - from production-ready to mind-bendingly esoteric! Whether you're building on Ethereum, Solana, Aptos, StarkNet, Fuel, Polkadot, Cardano, Cosmos, or other chains, you'll find examples ranging from professional smart contracts to hilarious esoteric languages.
 
 ### 🎯 Perfect For
 
@@ -37,18 +37,23 @@ This repository is a comprehensive **Web3 development playground** showcasing bl
     <td width="50%">
       <h3>🌐 Multi-Chain Support</h3>
       <ul>
-        <li>Ethereum & EVM chains</li>
-        <li>StarkNet (Cairo)</li>
-        <li>Fuel Network (Sway)</li>
+        <li>Ethereum & EVM chains (Solidity, Vyper, Yul, Huff)</li>
         <li>Solana (Rust/Anchor)</li>
-        <li>Aptos (Move)</li>
+        <li>NEAR (Rust)</li>
+        <li>Aptos & Sui (Move)</li>
+        <li>StarkNet (Cairo)</li>
+        <li>Polkadot & Substrate (Ink!, Rust)</li>
+        <li>Stacks / Bitcoin L2 (Clarity)</li>
+        <li>DFINITY / ICP (Motoko)</li>
         <li>Cardano (Haskell/Plutus)</li>
+        <li>Cosmos SDK (Go)</li>
+        <li>Fuel Network (Sway)</li>
       </ul>
     </td>
     <td width="50%">
-      <h3>💻 45+ Languages</h3>
+      <h3>💻 50+ Languages</h3>
       <ul>
-        <li>Smart Contracts: Solidity, Vyper, Cairo, Sway, Move, Yul, Huff</li>
+        <li>Smart Contracts: Solidity, Vyper, Move, Rust, Cairo, Ink!, Clarity, Motoko, Haskell, Go, Yul, Huff, Sway</li>
         <li>Frontend: TypeScript, Svelte, Vue, Elm, Astro, HTML/CSS</li>
         <li>Backend: Go, Elixir, Scala, Ruby, Nim, Crystal, Erlang</li>
         <li>Scripting: Python, Lua, Perl, PHP, PowerShell, Bash</li>
@@ -738,17 +743,24 @@ npm install && npm run dev
 |----------|----------|-----------|-------|--------|
 | **Solidity** | Smart Contracts | Hardhat | Ethereum | ✅ Complete |
 | **Vyper** | Smart Contracts | ApeWorX | Ethereum | ✅ Complete |
-| **Rust** | Programs | Anchor | Solana | ✅ Complete |
-| **Move** | Smart Contracts | Aptos CLI | Aptos | ✅ Complete |
+| **Rust** | Programs | Anchor | Solana / NEAR | ✅ Complete |
+| **Move** | Smart Contracts | Aptos CLI | Aptos / Sui | ✅ Complete |
+| **Cairo** | Smart Contracts | Scarb | StarkNet | ✅ Complete |
+| **Yul** | Low-level EVM | Solc | Ethereum | ✅ Complete |
+| **Huff** | Ultra-optimized | Huffc | Ethereum | ✅ Complete |
+| **Sway** | Smart Contracts | Forc | Fuel Network | ✅ Complete |
+| **Ink!** | Smart Contracts | Cargo Contract | Polkadot / Substrate | 📝 Planned |
+| **Clarity** | Smart Contracts | Clarinet | Stacks / Bitcoin L2 | 📝 Planned |
+| **Motoko** | Smart Contracts | dfx | DFINITY / ICP | 📝 Planned |
+| **Haskell** | Smart Contracts | Plutus | Cardano | 🚧 Basic |
+| **Go** | SDK/Backend | Cosmos SDK | Cosmos / Ethereum | ✅ Complete |
 | **TypeScript** | Frontend | Wagmi/React | Multi-chain | ✅ Complete |
-| **Go** | Backend/CLI | go-ethereum | Ethereum | ✅ Complete |
 | **Java** | Backend | Web3j | Ethereum | ✅ Complete |
 | **Python** | CLI/Backend | Web3.py | Multi-chain | ✅ Complete |
 | **Bash** | DevOps | Shell | - | ✅ Complete |
 | **HTML/CSS** | Frontend | Vanilla | - | ✅ Complete |
 | **C++** | Crypto | Custom | - | 🚧 Basic |
 | **Swift** | Mobile | Web3.swift | Ethereum | 🚧 Basic |
-| **Haskell** | Smart Contracts | Plutus | Cardano | 🚧 Basic |
 | **Zig** | WASM | Custom | - | 🚧 Basic |
 | **Kotlin** | Mobile | Web3j-Android | Ethereum | 🚧 Basic |
 | **🧠 Brainfuck** | Esoteric/Educational | Interpreter | - | ✅ Complete |
