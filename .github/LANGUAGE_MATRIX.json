@@ -1,20 +1,6 @@
 {
   "languages": {
-    "smart_contracts": ["solidity", "vyper", "cairo", "sway", "move", "yul", "huff", "ink", "clarity", "motoko"],
-    "blockchain_platforms": {
-      "ethereum": ["solidity", "vyper", "yul", "huff"],
-      "solana": ["rust"],
-      "near": ["rust"],
-      "aptos": ["move"],
-      "sui": ["move"],
-      "starknet": ["cairo"],
-      "polkadot": ["ink", "rust"],
-      "stacks": ["clarity"],
-      "dfinity": ["motoko"],
-      "cardano": ["haskell"],
-      "cosmos": ["go"],
-      "fuel": ["sway"]
-    },
+    "smart_contracts": ["solidity", "vyper", "cairo", "sway", "move", "yul", "huff"],
     "frontend": ["typescript", "svelte", "vue", "elm", "astro", "html-css"],
     "backend": ["go", "elixir", "scala", "ruby", "java", "nim", "crystal", "erlang", "clojure", "php"],
     "scripting": ["python", "lua", "bash", "perl", "powershell", "scheme"],
@@ -22,6 +8,6 @@
     "functional": ["haskell", "fsharp", "ocaml", "erlang"],
     "data_science": ["julia", "r", "matlab"]
   },
-  "total": 43,
-  "categories": 8
+  "total": 40,
+  "categories": 7
 }
