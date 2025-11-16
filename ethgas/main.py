@@ -346,6 +346,18 @@ Examples:
         help="Prediction method (default: moving_average)",
     )
 
+    parser.add_argument(
+        "--smart-fees",
+        action="store_true",
+        help="Recommend adaptive fee bands based on historical volatility",
+    )
+    parser.add_argument(
+        "--smart-fees-tx-type",
+        default="simple",
+        choices=list(TX_TYPES.keys()),
+        help="Transaction type to price against for smart fee bands",
+    )
+
     # Notifications
     parser.add_argument(
         "--desktop-notify",
@@ -436,6 +448,33 @@ Examples:
             else:
                 predictor = GasPredictor(history.get_records(network=network_name, limit=100))
                 print(predictor.format_prediction(prediction))
+        return
+
+    if args.smart_fees:
+        history = GasHistory()
+        network_name = NETWORKS[args.network]["name"]
+        records = history.get_records(network=network_name, limit=200)
+
+        if not records:
+            print("❌ No historical data available for smart fee bands")
+            return
+
+        predictor = GasPredictor(records)
+        gas_units = TX_TYPES[args.smart_fees_tx_type]["gas"]
+        latest_token_price = next(
+            (r.get("token_price_usd") for r in records if r.get("token_price_usd")),
+            None,
+        )
+        recommendations = predictor.suggest_fee_bands(
+            gas_units=gas_units,
+            token_price_usd=latest_token_price,
+            base_prediction_method=args.predict_method,
+        )
+
+        if args.json:
+            print(json.dumps(recommendations, indent=2))
+        else:
+            print(predictor.format_fee_bands(recommendations))
         return
 
     # Get network config

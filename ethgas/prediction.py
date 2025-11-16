@@ -92,6 +92,91 @@ class GasPredictor:
         else:
             return {"error": f"Unknown prediction method: {method}"}
 
+    def suggest_fee_bands(
+        self,
+        gas_units: int = 21_000,
+        token_price_usd: Optional[float] = None,
+        base_prediction_method: str = "exponential",
+    ) -> Dict:
+        """
+        Recommend adaptive fee bands based on predicted prices and volatility.
+
+        Args:
+            gas_units: Estimated gas limit to price against (default: 21k transfer)
+            token_price_usd: Optional token price for USD projections
+            base_prediction_method: Prediction method for base fee baseline
+
+        Returns:
+            Dictionary containing fee bands with confidence scores
+        """
+        if len(self.records) < 5:
+            return {"error": "Need at least 5 records to recommend fees"}
+
+        prediction = self.predict_next_hour(method=base_prediction_method)
+        if "error" in prediction:
+            # Fall back to moving average if preferred method fails
+            prediction = self.predict_next_hour(method="moving_average")
+            if "error" in prediction:
+                return prediction
+
+        base_fees = [r.get("base_fee", 0) for r in self.records[-50:]]
+        priority_tips = [r.get("priority_tip", 0) for r in self.records[-50:]]
+
+        avg_base = statistics.mean(base_fees)
+        stdev_base = statistics.stdev(base_fees) if len(base_fees) > 1 else 0
+        volatility_ratio = (stdev_base / avg_base) if avg_base > 0 else 0
+
+        median_priority = statistics.median(priority_tips) if priority_tips else 1.5
+
+        # Volatility-aware safety buffer scales with recent fluctuation
+        safety_buffer_pct = max(0.05, min(0.35, volatility_ratio * 0.6))
+
+        tiers = [
+            ("eco", 0.6, 0.25),
+            ("balanced", 1.0, 0.6),
+            ("priority", 1.25, 1.0),
+        ]
+
+        bands = {}
+        for tier, base_multiplier, priority_multiplier in tiers:
+            adjusted_base = prediction["predicted_base_fee"] * (
+                base_multiplier * (1 + safety_buffer_pct)
+            )
+            adjusted_priority = max(
+                0.2,
+                median_priority * (priority_multiplier + safety_buffer_pct),
+            )
+            max_fee = adjusted_base + adjusted_priority
+
+            cost_native = (max_fee * 1e-9) * gas_units
+            cost_usd = cost_native * token_price_usd if token_price_usd else None
+
+            bands[tier] = {
+                "max_fee_gwei": round(max_fee, 3),
+                "base_fee_gwei": round(adjusted_base, 3),
+                "priority_tip_gwei": round(adjusted_priority, 3),
+                "estimated_cost_native": round(cost_native, 6),
+                "estimated_cost_usd": round(cost_usd, 2) if cost_usd else None,
+            }
+
+        confidence = max(
+            0,
+            min(
+                100,
+                100 - (volatility_ratio * 100) + prediction.get("confidence", 50),
+            ),
+        )
+
+        return {
+            "method": base_prediction_method,
+            "bands": bands,
+            "volatility_ratio": round(volatility_ratio, 4),
+            "safety_buffer_pct": round(safety_buffer_pct * 100, 2),
+            "gas_units": gas_units,
+            "confidence": round(confidence, 1),
+            "trend": self.get_trend(),
+        }
+
     def _predict_moving_average(self, window: int = 10) -> Dict:
         """Simple moving average prediction."""
         recent = self.records[-window:]
@@ -287,6 +372,34 @@ class GasPredictor:
 
         lines.append("=" * 60)
 
+        return "\n".join(lines)
+
+    def format_fee_bands(self, bands: Dict) -> str:
+        """Format fee band recommendations for terminal display."""
+        if "error" in bands:
+            return f"❌ {bands['error']}"
+
+        lines = []
+        lines.append("=" * 60)
+        lines.append("ADAPTIVE FEE RECOMMENDATIONS")
+        lines.append("=" * 60)
+        lines.append(
+            f"Volatility Buffer: {bands['safety_buffer_pct']:>6.2f}% | "
+            f"Trend: {bands['trend'].upper():<12} | "
+            f"Confidence: {bands['confidence']:>5.1f}%"
+        )
+        lines.append("-" * 60)
+        for tier, payload in bands.get("bands", {}).items():
+            cost_usd = payload.get("estimated_cost_usd")
+            cost_str = f"${cost_usd:.2f}" if cost_usd is not None else "N/A"
+            lines.append(
+                f"{tier.title():10} Max: {payload['max_fee_gwei']:>7.3f} gwei | "
+                f"Base: {payload['base_fee_gwei']:>7.3f} | Tip: {payload['priority_tip_gwei']:>5.3f} | "
+                f"Est. Tx: {cost_str}"
+            )
+        lines.append("-" * 60)
+        lines.append(f"Gas units assumed: {bands['gas_units']}")
+        lines.append("=" * 60)
         return "\n".join(lines)
 
 
