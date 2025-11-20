@@ -20,6 +20,20 @@
 
 This repository is a comprehensive **Web3 development playground** showcasing blockchain development across **50+ programming languages and frameworks** - from production-ready to mind-bendingly esoteric! Whether you're building on Ethereum, Solana, Aptos, StarkNet, Fuel, Polkadot, Cardano, Cosmos, or other chains, you'll find examples ranging from professional smart contracts to hilarious esoteric languages.
 
+## 🚀 Installation
+
+```bash
+# Core CLI
+pip install .
+
+# Optional helpers
+pip install .[excel]          # Enable Excel export support
+pip install .[notifications]  # Enable desktop notifications
+pip install .[all]            # Install every optional extra
+```
+
+> Requires Python 3.8+.
+
 ### 🎯 Perfect For
 
 - 🚀 **Developers** learning Web3 development
